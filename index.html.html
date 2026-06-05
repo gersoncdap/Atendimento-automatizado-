@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GE&FE Medical Suplementos — Atendimento WhatsApp</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --wa-green:#25D366;--wa-dark:#075E54;--wa-mid:#128C7E;
+    --wa-light-bg:#ECE5DD;--wa-bubble-out:#DCF8C6;--wa-bubble-in:#FFFFFF;
+    --wa-header:#075E54;--wa-tick:#53BDEB;
+    --text-main:#111B21;--text-muted:#667781;--brand-blue:#3BAFD9;
+  }
+  body{background:linear-gradient(135deg,#0d1b2a 0%,#1a2744 50%,#0d1b2a 100%);display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Nunito',sans-serif;padding:20px;}
+  .wrapper{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:420px;}
+  .logo-area{display:flex;align-items:center;gap:12px;}
+  .logo-circle{width:52px;height:52px;border-radius:50%;background:#fff;border:2px solid var(--brand-blue);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+  .logo-text{color:#fff;}
+  .logo-name{font-size:15px;font-weight:800;letter-spacing:.5px;}
+  .logo-sub{font-size:11px;color:var(--brand-blue);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+  .phone-frame{width:100%;max-width:420px;background:var(--wa-light-bg);border-radius:20px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.07);display:flex;flex-direction:column;height:690px;}
+  .wa-header{background:var(--wa-header);padding:10px 14px 9px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .wa-avatar{width:40px;height:40px;border-radius:50%;background:#fff;border:1.5px solid var(--brand-blue);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+  .wa-header-info{flex:1;}
+  .wa-header-name{color:#fff;font-size:15px;font-weight:800;line-height:1.2;}
+  .wa-header-status{color:rgba(255,255,255,.65);font-size:11.5px;font-weight:600;}
+  .wa-header-icons{display:flex;gap:18px;}
+  .wa-header-icons span{color:rgba(255,255,255,.8);font-size:17px;cursor:pointer;}
+  .wa-chat{flex:1;overflow-y:auto;padding:10px 10px 6px;display:flex;flex-direction:column;gap:3px;scroll-behavior:smooth;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8b9aa' fill-opacity='0.18'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+  .wa-chat::-webkit-scrollbar{width:3px;}
+  .wa-chat::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:2px;}
+  .date-sep{text-align:center;margin:6px 0;}
+  .date-sep span{background:rgba(225,245,254,.82);color:var(--text-muted);font-size:11px;padding:3px 10px;border-radius:7px;font-weight:700;}
+  .msg{display:flex;flex-direction:column;max-width:84%;animation:popIn .18s ease;}
+  @keyframes popIn{from{opacity:0;transform:scale(.94) translateY(5px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .msg.in{align-self:flex-start;}
+  .msg.out{align-self:flex-end;}
+  .bubble{padding:7px 11px 5px;border-radius:8px;font-size:13.5px;line-height:1.48;position:relative;word-wrap:break-word;box-shadow:0 1px 2px rgba(0,0,0,.13);}
+  .msg.in .bubble{background:var(--wa-bubble-in);color:var(--text-main);border-top-left-radius:2px;}
+  .msg.out .bubble{background:var(--wa-bubble-out);color:var(--text-main);border-top-right-radius:2px;}
+  .bubble-meta{display:flex;align-items:center;justify-content:flex-end;gap:3px;margin-top:1px;}
+  .bubble-time{font-size:10.5px;color:var(--text-muted);}
+  .tick{font-size:12px;color:var(--wa-tick);}
+  .quick-replies{display:flex;flex-wrap:wrap;gap:5px;padding:7px 10px;background:rgba(255,255,255,.45);border-top:1px solid rgba(0,0,0,.07);flex-shrink:0;min-height:44px;}
+  .qr-btn{background:#fff;border:1.5px solid var(--wa-mid);color:var(--wa-dark);border-radius:18px;padding:5px 12px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .14s;font-family:'Nunito',sans-serif;line-height:1.3;}
+  .qr-btn:hover{background:var(--wa-mid);color:#fff;}
+  .qr-btn.human{border-color:#e67e22;color:#e67e22;}
+  .qr-btn.human:hover{background:#e67e22;color:#fff;}
+  .wa-input-bar{background:#F0F2F5;padding:7px 9px;display:flex;align-items:center;gap:7px;flex-shrink:0;border-top:1px solid rgba(0,0,0,.08);}
+  .wa-input{flex:1;background:#fff;border:none;border-radius:22px;padding:8px 15px;font-size:13.5px;font-family:'Nunito',sans-serif;outline:none;color:var(--text-main);}
+  .wa-send-btn{width:38px;height:38px;background:var(--wa-mid);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .14s;flex-shrink:0;}
+  .wa-send-btn:hover{background:var(--wa-dark);}
+  .wa-send-btn svg{width:16px;height:16px;fill:#fff;}
+  .typing{display:flex;align-items:center;gap:4px;padding:8px 12px;background:var(--wa-bubble-in);border-radius:8px;border-top-left-radius:2px;align-self:flex-start;box-shadow:0 1px 2px rgba(0,0,0,.12);}
+  .typing span{width:6px;height:6px;background:#aaa;border-radius:50%;animation:bounce 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:.2s;}
+  .typing span:nth-child(3){animation-delay:.4s;}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+  .reset-btn{background:rgba(37,211,102,.12);border:1.5px solid rgba(37,211,102,.35);color:#25D366;border-radius:18px;padding:7px 18px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .14s;}
+  .reset-btn:hover{background:rgba(37,211,102,.22);}
+  .note{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;color:rgba(255,255,255,.5);font-size:11.5px;line-height:1.6;max-width:420px;width:100%;text-align:center;}
+  .note strong{color:rgba(255,255,255,.8);}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="logo-area">
+    <div class="logo-circle">
+      <svg viewBox="0 0 100 100" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="49" fill="#fff" stroke="#3BAFD9" stroke-width="2"/>
+        <circle cx="50" cy="50" r="32" fill="#111"/>
+        <line x1="50" y1="28" x2="50" y2="72" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M42 36 Q36 42 42 48 Q48 54 42 60" fill="none" stroke="#3BAFD9" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M58 36 Q64 42 58 48 Q52 54 58 60" fill="none" stroke="#3BAFD9" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M50 28 Q40 22 34 26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <path d="M50 28 Q60 22 66 26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <path d="M10 50 L18 50 L21 44 L24 56 L27 50 L35 50" fill="none" stroke="#3BAFD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M65 50 L70 50 L73 44 L76 56 L79 50 L90 50" fill="none" stroke="#3BAFD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path id="topArc" d="M 18,50 A 32,32 0 0,1 82,50" fill="none"/>
+        <text font-size="7.5" font-family="Arial" font-weight="bold" fill="#3BAFD9" letter-spacing="1.5"><textPath href="#topArc" startOffset="8%">GE&amp;FE MEDICAL</textPath></text>
+        <path id="botArc" d="M 18,50 A 32,32 0 0,0 82,50" fill="none"/>
+        <text font-size="7" font-family="Arial" font-weight="bold" fill="#3BAFD9" letter-spacing="2"><textPath href="#botArc" startOffset="18%">SUPLEMENTOS</textPath></text>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <div class="logo-name">GE&amp;FE Medical</div>
+      <div class="logo-sub">Suplementos</div>
+    </div>
+  </div>
+
+  <div class="phone-frame">
+    <div class="wa-header">
+      <div class="wa-avatar">
+        <svg viewBox="0 0 100 100" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="49" fill="#fff"/>
+          <circle cx="50" cy="50" r="32" fill="#111"/>
+          <line x1="50" y1="28" x2="50" y2="72" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+          <path d="M42 36 Q36 42 42 48 Q48 54 42 60" fill="none" stroke="#3BAFD9" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M58 36 Q64 42 58 48 Q52 54 58 60" fill="none" stroke="#3BAFD9" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M50 28 Q40 22 34 26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <path d="M50 28 Q60 22 66 26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <path d="M10 50 L18 50 L21 44 L24 56 L27 50 L35 50" fill="none" stroke="#3BAFD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M65 50 L70 50 L73 44 L76 56 L79 50 L90 50" fill="none" stroke="#3BAFD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="wa-header-info">
+        <div class="wa-header-name">GE&amp;FE Medical Suplementos</div>
+        <div class="wa-header-status">online</div>
+      </div>
+      <div class="wa-header-icons"><span>⋮</span></div>
+    </div>
+    <div class="wa-chat" id="chat"><div class="date-sep"><span>Hoje</span></div></div>
+    <div class="quick-replies" id="quick-replies"></div>
+    <div class="wa-input-bar">
+      <input class="wa-input" id="user-input" type="text" placeholder="Digite uma mensagem..." autocomplete="off"/>
+      <button class="wa-send-btn" onclick="sendManual()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetChat()">↺ Reiniciar conversa</button>
+  <div class="note"><strong>Simulador de atendimento GE&FE Medical</strong><br>Clique nas opções ou digite livremente para testar o fluxo completo.</div>
+</div>
+
+<script>
+// ─── CONSTANTES ───────────────────────────────────────────────
+const ORIGIN_CEP     = '01332001';
+const MOTOBOY_KM     = 1.90;
+const PRICE_UNIT     = 125.00;
+const WEIGHT_KG      = 0.300;
+const BOX_H=8, BOX_W=12, BOX_L=14;
+const PIX_KEY        = '128.579.658-69';
+const PIX_NAME       = 'Gerson Alves dos Santos — Banco Itaú';
+const WHATSAPP_HUMAN = 'https://wa.me/5511910249606';
+
+// ─── FRETE ────────────────────────────────────────────────────
+// Peso cubado Correios: H*W*L / 6000
+function pesoCubado(qtd) {
+  const camadas = Math.ceil(qtd / 2);
+  const cols    = Math.min(qtd, 2);
+  return (BOX_H * camadas * BOX_W * cols * BOX_L) / 6000;
+}
+function pesoFinal(qtd) {
+  return Math.max(WEIGHT_KG * qtd, pesoCubado(qtd));
+}
+
+// Zonas geográficas por prefixo de CEP
+// SP Capital:      01000-05999 e 08000-08499
+// Grande SP:       06000-07999 e 08500-09999
+// Interior SP:     11000-19999
+// Outras regiões:  resto do Brasil
+function zonaDestino(cepStr) {
+  const n = parseInt(cepStr.replace(/\D/g,'').substring(0,5));
+  if ((n >= 1000 && n <= 5999) || (n >= 8000 && n <= 8499)) return 'sp_capital';
+  if ((n >= 6000 && n <= 7999) || (n >= 8500 && n <= 9999)) return 'grande_sp';
+  return 'outras';
+}
+
+// Tabelas Correios — SP Capital + Grande SP (até 10 frascos = até 3kg)
+// Valores fornecidos pelo cliente: PAC R$23,30 | SEDEX R$25,80 (até 10 un)
+// Acima de 10 frascos: PAC R$25,80 | SEDEX R$27,60
+function tarifaCorreios(qtd, servico) {
+  const faixaGrande = qtd <= 10;
+  if (servico === 'PAC')   return faixaGrande ? 23.30 : 25.80;
+  if (servico === 'SEDEX') return faixaGrande ? 25.80 : 27.60;
+  return 0;
+}
+
+// Tabela estimada nacional (outras cidades) baseada na tabela pública dos Correios
+// Usada apenas como PRÉVIA — valor real confirmado pelo atendente
+function tarifaNacionalEstimada(qtd, servico) {
+  const peso = pesoFinal(qtd);
+  const p = Math.max(peso, 0.3);
+  if (servico === 'PAC') {
+    if (p <= 0.3)  return 18.50;
+    if (p <= 0.5)  return 20.90;
+    if (p <= 1.0)  return 24.50;
+    if (p <= 2.0)  return 30.80;
+    if (p <= 3.0)  return 36.20;
+    if (p <= 5.0)  return 44.00;
+    return 55.00;
+  }
+  if (servico === 'SEDEX') {
+    if (p <= 0.3)  return 32.40;
+    if (p <= 0.5)  return 36.80;
+    if (p <= 1.0)  return 44.20;
+    if (p <= 2.0)  return 57.50;
+    if (p <= 3.0)  return 68.90;
+    if (p <= 5.0)  return 88.00;
+    return 110.00;
+  }
+  return 0;
+}
+
+// Distância estimada (somente ida) entre dois CEPs de SP Capital / Grande SP
+function distanciaEstimadaKm(cepOrigem, cepDestino) {
+  const o = parseInt(cepOrigem.replace(/\D/g,'').substring(0,5));
+  const d = parseInt(cepDestino.replace(/\D/g,'').substring(0,5));
+  const diff = Math.abs(o - d);
+  const km = Math.max(2, Math.min(diff / 130, 35));
+  return parseFloat(km.toFixed(1));
+}
+
+function freteMotoboyValor(cepDestino) {
+  const dist  = distanciaEstimadaKm(ORIGIN_CEP, cepDestino);
+  // somente ida, mínimo R$ 12,00
+  const valor = Math.max(dist * MOTOBOY_KM, 12);
+  return { valor: parseFloat(valor.toFixed(2)), dist };
+}
+
+// ─── STATE ────────────────────────────────────────────────────
+let state       = 'welcome';
+let cart        = {mr:0, rd:0};
+let clientName  = '';
+let savedCEP    = '';
+let savedAddr   = '';
+let chosenFrete = null; // {tipo, valor}
+
+// ─── COMPOSIÇÕES ─────────────────────────────────────────────
+const COMP_RD = `🔴 *Rheumo Dor (RD) — Composição:*\n\n` +
+  `• Colágeno Tipo II não desnaturado\n• Magnésio\n• Zinco\n• Vitamina K2 (Menaquinona-7)\n\n` +
+  `Formulação voltada para a saúde articular e combate às dores.`;
+
+const COMP_MR = `🌱 *Mururé Extra (MR) — Composição:*\n\n` +
+  `• Mururé — purificante, reumatismo articular e gota\n` +
+  `• Paré-Paroba — antirreumático, dores artríticas\n` +
+  `• Samambaia — anti-inflamatória e antioxidante\n` +
+  `• Sucupira — ácido úrico, artrite, reumatismo\n` +
+  `• Pacová — calmante e ação anti-reumática\n` +
+  `• Salsa-Parrilha — desintoxicante, ácido úrico, artrite\n` +
+  `• Manacá — artrite, reumatismo e febre\n` +
+  `• Quebra-Pedra — anti-inflamatório natural\n` +
+  `• Impossível — espasmos e circulação\n` +
+  `• Erva Baleeira — anti-inflamatória, gota e artrite reumatoide\n\n` +
+  `Fórmula 100% fitoterápica de origem natural.`;
+
+// ─── RENDER ───────────────────────────────────────────────────
+const chat        = document.getElementById('chat');
+const qrContainer = document.getElementById('quick-replies');
+
+function now() { return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+function fmt(t) { return t.replace(/\*(.*?)\*/g,'<strong>$1</strong>').replace(/_\((.*?)\)_/g,'<em style="font-size:12px;color:#888">$1</em>').replace(/\n/g,'<br>'); }
+
+function addMsg(text, type) {
+  const msg = document.createElement('div');
+  msg.className = `msg ${type}`;
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  bub.innerHTML = fmt(text);
+  const meta = document.createElement('div');
+  meta.className = 'bubble-meta';
+  meta.innerHTML = `<span class="bubble-time">${now()}</span>${type==='out'?'<span class="tick">✓✓</span>':''}`;
+  bub.appendChild(meta);
+  msg.appendChild(bub);
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const t=document.createElement('div');
+  t.className='msg in'; t.id='typing-indicator';
+  t.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
+  chat.appendChild(t); chat.scrollTop=chat.scrollHeight;
+}
+function removeTyping() { const t=document.getElementById('typing-indicator'); if(t)t.remove(); }
+
+function setOptions(options) {
+  qrContainer.innerHTML='';
+  if(!options||!options.length) return;
+  options.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.className='qr-btn'+(opt.human?' human':'');
+    btn.textContent=opt.label;
+    btn.onclick=()=>handleOption(opt);
+    qrContainer.appendChild(btn);
+  });
+}
+
+// ─── BOTÃO ATENDENTE (aparece em todos os menus) ──────────────
+const HUMAN_OPT = { label: '👤 Falar com atendente', human: true, action: 'human' };
+
+// ─── FLOWS ────────────────────────────────────────────────────
+function isWithinHours() {
+  const d=new Date(), day=d.getDay(), h=d.getHours()+d.getMinutes()/60;
+  if(day===0) return false;
+  if(day===6) return h>=9&&h<13;
+  return h>=9&&h<18;
+}
+
+const flows = {
+
+  welcome: {
+    bot: ()=>{
+      if(!isWithinHours()) return [
+        `Olá! 👋 Obrigado por entrar em contato com a *GE&FE Medical Suplementos*. 🌿\n\n` +
+        `No momento estamos *fora do horário de atendimento*.\n\n` +
+        `🕐 *Horários:*\n• Seg a Sex: 09h às 18h\n• Sábado: 09h às 13h\n• Domingos e feriados: não atendemos\n\n` +
+        `Deixe seu nome e dúvida que retornaremos no próximo horário disponível! 😊`
+      ];
+      return [`Olá! 👋 Seja bem-vindo(a) à *GE&FE Medical Suplementos*! 🌿\n\nSomos especializados em suplementos naturais para o combate às dores.\n\nPara começarmos, por favor me informe seu *nome*.`];
+    },
+    next:'get_name'
+  },
+
+  greeting_named: {
+    bot: ()=>[`Olá, *${clientName}*! 😊 Como posso te ajudar hoje?`],
+    options: [
+      {label:'🌿 Conhecer os produtos',    next:'products'},
+      {label:'🛒 Fazer um pedido',          next:'order_intro'},
+      {label:'💰 Preços e pagamento',       next:'pricing'},
+      {label:'🚚 Como funciona a entrega',  next:'delivery'},
+      {label:'🕐 Horário de atendimento',   next:'hours'},
+      {label:'❓ Dúvidas frequentes',       next:'faq'},
+      HUMAN_OPT
+    ]
+  },
+
+  products: {
+    bot: ()=>[
+      `Temos *dois suplementos naturais* para combate às dores:\n\n` +
+      `🌱 *Mururé Extra (MR)*\nFórmula fitoterápica com 10 plantas medicinais. Indicado para reumatismo, artrite, gota e inflamações.\n\n` +
+      `🔴 *Rheumo Dor (RD)*\nComposto com Colágeno Tipo II, Magnésio, Zinco e Vitamina K2. Foco na saúde articular.\n\n` +
+      `⚠️ Ambos são *suplementos*, não medicamentos. Não somos farmácia de manipulação.`
+    ],
+    options:[
+      {label:'🌱 Composição do MR', next:'comp_mr'},
+      {label:'🔴 Composição do RD', next:'comp_rd'},
+      {label:'🛒 Fazer um pedido',  next:'order_intro'},
+      {label:'🔙 Menu principal',   next:'greeting_named'},
+      HUMAN_OPT
+    ]
+  },
+
+  comp_mr:{
+    bot:()=>[COMP_MR],
+    options:[
+      {label:'🔴 Ver RD',          next:'comp_rd'},
+      {label:'🛒 Fazer pedido',    next:'order_intro'},
+      {label:'🔙 Menu principal',  next:'greeting_named'},
+      HUMAN_OPT
+    ]
+  },
+
+  comp_rd:{
+    bot:()=>[COMP_RD],
+    options:[
+      {label:'🌱 Ver MR',          next:'comp_mr'},
+      {label:'🛒 Fazer pedido',    next:'order_intro'},
+      {label:'🔙 Menu principal',  next:'greeting_named'},
+      HUMAN_OPT
+    ]
+  },
+
+  pricing:{
+    bot:()=>[
+      `💰 *Valores:*\n\n• 1 frasco com 30 cápsulas = *R$ 125,00* + frete\n\n` +
+      `💳 *Pagamento:* exclusivamente via *PIX*.\nDados informados após a confirmação do pedido.\n\n` +
+      `⏱️ Envio em até *24 horas úteis* após comprovação do pagamento.`
+    ],
+    options:[
+      {label:'🛒 Fazer um pedido', next:'order_intro'},
+      {label:'🚚 Ver entrega',     next:'delivery'},
+      {label:'🔙 Menu principal',  next:'greeting_named'},
+      HUMAN_OPT
+    ]
+  },
+
+  delivery:{
+    bot:()=>[
+      `🚚 *Informações de entrega:*\n\n` +
+      `🏙️ *São Paulo Capital:*\nEntrega via *motoboy* ou *Correios PAC* (você escolhe).\n\n` +
+      `🇧🇷 *Demais cidades — todo o Brasil:*\nEnvio pelos *Correios (PAC)*.\n\n` +
+      `⏱️ Prazo de despacho: até *24 horas úteis* após confirmação do pagamento.\n\n` +
+      `ℹ️ Não vendemos pela internet para garantir a *autenticidade* dos produtos e evitar falsificações.`
+    ],
+    options:[
+      {label:'🛒 Fazer um pedido', next:'order_intro'},
+      {label:'🔙 Menu principal',  next:'greeting_named'},
+      HUMAN_OPT
+    ]
+  },
+
+  hours:{
+    bot:()=>[
+      `🕐 *Horário de atendimento:*\n\n` +
+      `• Segunda a Sexta: *09h às 18h*\n` +
+      `• Sábado: *09h às 13h*\n` +
+      `• Domingos e feriados: *não atendemos*\n\n` +
+      `Mensagens fora do horário são respondidas no próximo expediente. 😊`
+    ],
+    options:[
+      {label:'🛒 Fazer um pedido', next:'order_intro'},
+      {label:'🔙 Menu principal',  next:'greeting_named'},
+      HUMAN_OPT
+    ]
+  },
+
+  faq:{
+    bot:()=>[
+      `❓ *Perguntas frequentes:*\n\n` +
+      `*1. São medicamentos?*\nNão. São suplementos naturais. Não somos farmácia de manipulação.\n\n` +
+      `*2. Têm contraindicações?*\nConsulte seu médico, especialmente gestantes, lactantes e pessoas em tratamento.\n\n` +
+      `*3. Por que não vendem pela internet?*\nPara garantir autenticidade e evitar falsificações.\n\n` +
+      `*4. Como é o pagamento?*\nSomente PIX. Dados informados após confirmação do pedido.\n\n` +
+      `*5. Qual o prazo?*\nDespacho em até 24h úteis após confirmação do pagamento.`
+    ],
+    options:[
+      {label:'🛒 Fazer um pedido', next:'order_intro'},
+      {label:'🔙 Menu principal',  next:'greeting_named'},
+      HUMAN_OPT
+    ]
+  },
+
+  order_intro:{
+    bot:()=>[`🛒 Vamos montar seu pedido! Qual produto você deseja?`],
+    options:[
+      {label:'🌱 Mururé Extra (MR)', next:'order_mr'},
+      {label:'🔴 Rheumo Dor (RD)',   next:'order_rd'},
+      {label:'✅ Ambos os produtos', next:'order_both'},
+      {label:'🔙 Voltar',            next:'greeting_named'},
+      HUMAN_OPT
+    ]
+  },
+
+  order_mr:{
+    bot:()=>[`🌱 *Mururé Extra (MR)* selecionado.\n\nQuantas unidades deseja?`],
+    options:[
+      {label:'1 frasco — R$ 125,00',  next:'ask_cep', qty:{mr:1,rd:0}},
+      {label:'2 frascos — R$ 250,00', next:'ask_cep', qty:{mr:2,rd:0}},
+      {label:'3 frascos — R$ 375,00', next:'ask_cep', qty:{mr:3,rd:0}},
+      HUMAN_OPT
+    ]
+  },
+
+  order_rd:{
+    bot:()=>[`🔴 *Rheumo Dor (RD)* selecionado.\n\nQuantas unidades deseja?`],
+    options:[
+      {label:'1 frasco — R$ 125,00',  next:'ask_cep', qty:{mr:0,rd:1}},
+      {label:'2 frascos — R$ 250,00', next:'ask_cep', qty:{mr:0,rd:2}},
+      {label:'3 frascos — R$ 375,00', next:'ask_cep', qty:{mr:0,rd:3}},
+      HUMAN_OPT
+    ]
+  },
+
+  order_both:{
+    bot:()=>[`✅ *Ambos os produtos* selecionados.\n\nQuantas unidades de *cada* deseja?`],
+    options:[
+      {label:'1 de cada — R$ 250,00', next:'ask_cep', qty:{mr:1,rd:1}},
+      {label:'2 de cada — R$ 500,00', next:'ask_cep', qty:{mr:2,rd:2}},
+      {label:'3 de cada — R$ 750,00', next:'ask_cep', qty:{mr:3,rd:3}},
+      HUMAN_OPT
+    ]
+  },
+
+  ask_cep:{
+    bot:(qty)=>{
+      if(qty){cart.mr=qty.mr; cart.rd=qty.rd;}
+      return [`📍 Para calcular o frete, me informe seu *CEP* de entrega.\n\nExemplo: *01332-001*`];
+    },
+    next:'get_cep'
+  },
+
+  confirm_payment:{
+    bot:()=>{
+      const hoje = new Date();
+      const prox = new Date(hoje.getTime() + 40*24*60*60*1000);
+      const opcoes = {day:'2-digit',month:'2-digit',year:'numeric'};
+      const dataProx = prox.toLocaleDateString('pt-BR', opcoes);
+      return [
+        `✅ *Comprovante recebido!* Estamos verificando o pagamento.\n\n` +
+        `Assim que confirmado, você receberá o *código de rastreamento*. 📦\n\n` +
+        `🙏 *Muito obrigado pela sua preferência, ${clientName}!*\n` +
+        `É uma honra poder contribuir com o seu bem-estar. 🌿\n\n` +
+        `📅 *Lembrete de reposição:*\nBaseado no uso diário, sugerimos a próxima aquisição por volta de *${dataProx}* (aproximadamente 40 dias). Assim você não fica sem o produto! 😊\n\n` +
+        `🕐 *Atendimento:* Seg/Sex 09h–18h | Sáb 09h–13h`
+      ];
+    },
+    options:[
+      {label:'🔙 Menu principal', next:'greeting_named'},
+      HUMAN_OPT
+    ]
+  }
+};
+
+// ─── HANDLER DE OPÇÕES ────────────────────────────────────────
+function handleOption(opt) {
+  // Atendente humano
+  if(opt.action==='human') {
+    addMsg('👤 Falar com atendente','out');
+    qrContainer.innerHTML='';
+    setTimeout(()=>{
+      showTyping();
+      setTimeout(()=>{
+        removeTyping();
+        addMsg(
+          `Claro! Vou te transferir para um de nossos atendentes. 😊\n\n` +
+          `🕐 *Horário de atendimento:*\n• Seg a Sex: 09h às 18h\n• Sábado: 09h às 13h\n\n` +
+          `Toque no botão abaixo para abrir o WhatsApp com um atendente humano:`,
+          'in'
+        );
+        // Botão especial de link externo
+        qrContainer.innerHTML='';
+        const btn=document.createElement('a');
+        btn.href=WHATSAPP_HUMAN;
+        btn.target='_blank';
+        btn.style.cssText='display:inline-block;background:#25D366;color:#fff;border-radius:18px;padding:7px 18px;font-size:13px;font-weight:800;text-decoration:none;font-family:Nunito,sans-serif;margin:2px 4px;';
+        btn.textContent='💬 Abrir WhatsApp com atendente';
+        qrContainer.appendChild(btn);
+        // Botão voltar
+        const back=document.createElement('button');
+        back.className='qr-btn';
+        back.textContent='🔙 Voltar ao menu';
+        back.onclick=()=>{ addMsg('🔙 Voltar ao menu','out'); qrContainer.innerHTML=''; setTimeout(()=>{showTyping();setTimeout(()=>{removeTyping();runFlow('greeting_named');},800);},200); };
+        qrContainer.appendChild(back);
+      },800);
+    },300);
+    return;
+  }
+
+  // Opção de frete
+  if(opt.isFrete){
+    chosenFrete={tipo:opt.tipo, valor:opt.valor};
+    addMsg(opt.label,'out');
+    qrContainer.innerHTML='';
+    showResumoFinal();
+    return;
+  }
+
+  addMsg(opt.label,'out');
+  qrContainer.innerHTML='';
+
+  if(opt.qty){cart.mr=opt.qty.mr; cart.rd=opt.qty.rd;}
+
+  setTimeout(()=>{
+    showTyping();
+    setTimeout(()=>{ removeTyping(); runFlow(opt.next, opt.qty||null); },800);
+  },250);
+}
+
+// ─── CEP → FRETE ─────────────────────────────────────────────
+function processarCEP(cepRaw) {
+  const cep = cepRaw.replace(/\D/g,'');
+  if(cep.length!==8){
+    setTimeout(()=>{
+      showTyping();
+      setTimeout(()=>{
+        removeTyping();
+        addMsg(`CEP inválido. Por favor informe um *CEP com 8 dígitos*.\n\nExemplo: *01332001* ou *01332-001*`,'in');
+      },700);
+    },200);
+    return;
+  }
+
+  savedCEP = cep;
+  const qtd   = cart.mr + cart.rd;
+  const peso  = pesoFinal(qtd);
+  const zona  = zonaDestino(cep);
+  const sub   = qtd * PRICE_UNIT;
+
+  // Monta mensagem resumo
+  let msg = `📦 *Resumo do pedido:*\n\n`;
+  if(cart.mr>0) msg+=`• ${cart.mr}x Mururé Extra (MR) = R$ ${(cart.mr*125).toFixed(2).replace('.',',')}\n`;
+  if(cart.rd>0) msg+=`• ${cart.rd}x Rheumo Dor (RD) = R$ ${(cart.rd*125).toFixed(2).replace('.',',')}\n`;
+  msg+=`\n💰 Subtotal produtos: *R$ ${sub.toFixed(2).replace('.',',')}*\n`;
+  msg+=`📍 CEP de entrega: *${cep.replace(/(\d{5})(\d{3})/,'$1-$2')}*\n`;
+  msg+=`📦 Peso do pacote: *${peso.toFixed(3).replace('.',',')} kg*\n\n`;
+
+  const opts=[];
+
+  if(zona === 'sp_capital' || zona === 'grande_sp') {
+    const pac   = tarifaCorreios(qtd, 'PAC');
+    const sedex = tarifaCorreios(qtd, 'SEDEX');
+    const zona_label = zona === 'sp_capital' ? 'São Paulo Capital' : 'Grande São Paulo';
+    msg += `📍 Região detectada: *${zona_label}*\n🚚 *Escolha a forma de entrega:*`;
+    addMsg(msg,'in');
+
+    if(zona === 'sp_capital') {
+      const mb = freteMotoboyValor(cep);
+      opts.push({
+        label:`🛵 Motoboy — R$ ${mb.valor.toFixed(2).replace('.',',')}`,
+        isFrete:true, tipo:`Motoboy (~${mb.dist} km)`, valor:mb.valor
+      });
+    }
+    opts.push({
+      label:`📬 Correios PAC — R$ ${pac.toFixed(2).replace('.',',')}`,
+      isFrete:true, tipo:'Correios PAC', valor:pac
+    });
+    opts.push({
+      label:`⚡ Correios SEDEX — R$ ${sedex.toFixed(2).replace('.',',')}`,
+      isFrete:true, tipo:'Correios SEDEX', valor:sedex
+    });
+
+  } else {
+    // Outras localidades — exibe prévia e direciona ao atendente para confirmação
+    const pacPrev   = tarifaNacionalEstimada(qtd, 'PAC');
+    const sedexPrev = tarifaNacionalEstimada(qtd, 'SEDEX');
+    msg += `📍 Região: *outras localidades*\n\n` +
+           `⚠️ *Prévia estimada de frete:*\n` +
+           `• 📬 PAC: ~R$ ${pacPrev.toFixed(2).replace('.',',')}\n` +
+           `• ⚡ SEDEX: ~R$ ${sedexPrev.toFixed(2).replace('.',',')}\n\n` +
+           `Os valores acima são uma *estimativa*. Para confirmar o frete exato para sua cidade, nosso atendente pode calcular agora.`;
+    addMsg(msg,'in');
+    opts.push({
+      label:`📬 Seguir com PAC (~R$ ${pacPrev.toFixed(2).replace('.',',')})`,
+      isFrete:true, tipo:'Correios PAC (prévia)', valor:pacPrev
+    });
+    opts.push({
+      label:`⚡ Seguir com SEDEX (~R$ ${sedexPrev.toFixed(2).replace('.',',')})`,
+      isFrete:true, tipo:'Correios SEDEX (prévia)', valor:sedexPrev
+    });
+  }
+
+  opts.push({label:'✏️ Corrigir CEP', action:'corrigir_cep'});
+  opts.push(HUMAN_OPT);
+
+  setTimeout(()=>{ setOptions(opts); }, 400);
+}
+
+// ─── PEDIR ENDEREÇO COMPLETO ─────────────────────────────────
+function showResumoFinal(){
+  showTyping();
+  setTimeout(()=>{
+    removeTyping();
+    addMsg(
+      `📍 Para finalizar, preciso do seu *endereço completo* de entrega.\n\n` +
+      `Por favor informe:\n` +
+      `*Rua, número, complemento, bairro, cidade, UF e CEP*`,
+      'in'
+    );
+    state = 'get_full_address';
+  },900);
+}
+
+// ─── CHECKOUT FINAL ───────────────────────────────────────────
+function extrairCEPDoEndereco(texto) {
+  // Aceita formatos: 01332001 ou 01332-001 (com ou sem espaço ao redor)
+  const match = texto.match(/\b(\d{5})-?(\d{3})\b/);
+  return match ? (match[1] + match[2]) : null;
+}
+
+function showCheckout(){
+  showTyping();
+  setTimeout(()=>{
+    removeTyping();
+
+    const cepEndereco = extrairCEPDoEndereco(savedFullAddress);
+
+    // BLOQUEIO 1: CEP ausente no endereço
+    if(!cepEndereco) {
+      addMsg(
+        `⚠️ *CEP não encontrado no endereço informado.*\n\n` +
+        `Para garantir a entrega correta e confirmar o frete cotado, o CEP é obrigatório.\n\n` +
+        `Por favor, informe novamente o endereço completo incluindo o CEP:\n` +
+        `*Rua, número, complemento, bairro, cidade, UF e CEP*`,
+        'in'
+      );
+      state = 'get_full_address';
+      return;
+    }
+
+    // BLOQUEIO 2: CEP do endereço diferente do CEP da cotação
+    if(cepEndereco !== savedCEP) {
+      addMsg(
+        `⚠️ *CEP divergente!*\n\n` +
+        `O CEP informado no endereço (*${cepEndereco.replace(/(\d{5})(\d{3})/,'$1-$2')}*) é diferente do CEP da cotação de frete (*${savedCEP.replace(/(\d{5})(\d{3})/,'$1-$2')}*).\n\n` +
+        `Não é possível finalizar o pedido com CEPs diferentes. Escolha uma das opções abaixo:`,
+        'in'
+      );
+      setOptions([
+        {label:'✏️ Corrigir endereço', action:'corrigir_endereco'},
+        {label:'🔄 Refazer cotação com o CEP do endereço', action:'corrigir_cep'},
+        HUMAN_OPT
+      ]);
+      return;
+    }
+
+    const qtd   = cart.mr+cart.rd;
+    const sub   = qtd*PRICE_UNIT;
+    const total = sub+chosenFrete.valor;
+    let items='';
+    if(cart.mr>0) items+=`• ${cart.mr}x Mururé Extra (MR) = R$ ${(cart.mr*125).toFixed(2).replace('.',',')}\n`;
+    if(cart.rd>0) items+=`• ${cart.rd}x Rheumo Dor (RD) = R$ ${(cart.rd*125).toFixed(2).replace('.',',')}\n`;
+
+    addMsg(
+      `🧾 *CHECKOUT — Resumo final:*\n\n` +
+      `👤 *Cliente:* ${clientName}\n\n` +
+      `📦 *Itens:*\n${items}\n` +
+      `🚚 *Frete (${chosenFrete.tipo}):* R$ ${chosenFrete.valor.toFixed(2).replace('.',',')}\n` +
+      `💰 *Total a pagar: R$ ${total.toFixed(2).replace('.',',')}*\n\n` +
+      `📍 *Entrega:*\n${savedFullAddress}\n\n` +
+      `Tudo certo? Confirme para receber os dados do PIX.`,
+      'in'
+    );
+    setOptions([
+      {label:'✅ Confirmar pedido', action:'payment'},
+      {label:'✏️ Corrigir endereço', action:'corrigir_endereco'},
+      {label:'🔄 Alterar entrega',   action:'corrigir_cep'},
+      {label:'❌ Cancelar',          next:'greeting_named'},
+      HUMAN_OPT
+    ]);
+  },900);
+}
+
+// ─── PAGAMENTO ────────────────────────────────────────────────
+function showPaymentInfo(){
+  const qtd   = cart.mr+cart.rd;
+  const sub   = qtd*PRICE_UNIT;
+  const frete = chosenFrete?chosenFrete.valor:0;
+  const total = sub+frete;
+
+  showTyping();
+  setTimeout(()=>{
+    removeTyping();
+    addMsg(
+      `🎉 *Pedido confirmado!* Obrigado pela sua preferência, *${clientName}*! 🌿\n\n` +
+      `Realize o pagamento via *PIX* e envie o comprovante aqui:\n\n` +
+      `🔑 *Chave PIX:* ${PIX_KEY}\n` +
+      `👤 *Titular:* ${PIX_NAME}\n` +
+      `💰 *Valor total: R$ ${total.toFixed(2).replace('.',',')}*\n` +
+      `_(produtos: R$ ${sub.toFixed(2).replace('.',',')} + ${chosenFrete?chosenFrete.tipo:'frete'}: R$ ${frete.toFixed(2).replace('.',',')})_\n\n` +
+      `📍 *Entrega:* ${savedFullAddress}\n\n` +
+      `⏱️ Envio em até *24 horas úteis* após confirmação do pagamento.\n\n` +
+      `⚠️ O pedido só é processado após a comprovação do pagamento.`,
+      'in'
+    );
+    setOptions([
+      {label:'📎 Enviei o comprovante', next:'confirm_payment'},
+      {label:'❓ Tenho uma dúvida',     next:'faq'},
+      HUMAN_OPT
+    ]);
+  },800);
+}
+
+// ─── HANDLER TEXTO LIVRE ──────────────────────────────────────
+function handleFreeText(text){
+  addMsg(text,'out');
+  qrContainer.innerHTML='';
+
+  if(state==='get_name'){
+    clientName=text.trim().split(' ')[0];
+    setTimeout(()=>{ showTyping(); setTimeout(()=>{ removeTyping(); runFlow('greeting_named'); state='menu'; },900); },200);
+    return;
+  }
+
+  if(state==='get_cep'){
+    processarCEP(text.trim());
+    return;
+  }
+
+  if(state==='get_full_address'){
+    savedFullAddress = text.trim();
+    showCheckout();
+    return;
+  }
+
+  // fallback
+  setTimeout(()=>{
+    showTyping();
+    setTimeout(()=>{
+      removeTyping();
+      addMsg(`Não consegui entender. Use uma das opções abaixo ou fale com nosso atendente. 😊`,'in');
+      runFlow('greeting_named');
+    },800);
+  },200);
+}
+
+// ─── RUNNER DE FLOWS ──────────────────────────────────────────
+function runFlow(flowKey, param){
+  const flow=flows[flowKey];
+  if(!flow) return;
+  state=flowKey;
+
+  const messages=flow.bot(param);
+  if(!messages||!messages.length){
+    if(flow.options) setOptions(flow.options);
+    return;
+  }
+
+  let delay=0;
+  messages.forEach((msg,i)=>{
+    setTimeout(()=>{
+      if(i>0){ showTyping(); setTimeout(()=>{ removeTyping(); addMsg(msg,'in'); },650); }
+      else addMsg(msg,'in');
+    },delay);
+    delay+=i>0?850:0;
+  });
+
+  const optDelay=delay+(messages.length>1?750:0);
+  setTimeout(()=>{
+    if(flow.options) setOptions(flow.options);
+    else if(flow.next) state=flow.next;
+  },optDelay);
+}
+
+// Sobrescreve handleOption para actions inline
+const _orig = handleOption;
+window.handleOption = function(opt){
+  if(opt.action==='payment'){
+    addMsg('✅ Confirmar e pagar','out');
+    qrContainer.innerHTML='';
+    showPaymentInfo();
+    return;
+  }
+  if(opt.action==='corrigir_cep'){
+    addMsg('🔄 Alterar entrega','out');
+    qrContainer.innerHTML='';
+    setTimeout(()=>{ showTyping(); setTimeout(()=>{ removeTyping(); runFlow('ask_cep'); state='get_cep'; },800); },250);
+    return;
+  }
+  if(opt.action==='corrigir_endereco'){
+    addMsg('✏️ Corrigir endereço','out');
+    qrContainer.innerHTML='';
+    showTyping();
+    setTimeout(()=>{
+      removeTyping();
+      addMsg(`Por favor informe novamente o *endereço completo*:\n*Rua, número, complemento, bairro, cidade, UF e CEP*`,'in');
+      state='get_full_address';
+    },800);
+    return;
+  }
+  _orig(opt);
+};
+
+// ─── SEND MANUAL ──────────────────────────────────────────────
+function sendManual(){
+  const input=document.getElementById('user-input');
+  const text=input.value.trim();
+  if(!text) return;
+  input.value='';
+  handleFreeText(text);
+}
+document.getElementById('user-input').addEventListener('keydown',e=>{ if(e.key==='Enter') sendManual(); });
+
+// ─── RESET ────────────────────────────────────────────────────
+function resetChat(){
+  chat.innerHTML='<div class="date-sep"><span>Hoje</span></div>';
+  qrContainer.innerHTML='';
+  cart={mr:0,rd:0}; clientName=''; savedCEP=''; savedAddr=''; savedFullAddress='';
+  chosenFrete=null; state='welcome';
+  setTimeout(()=>{ showTyping(); setTimeout(()=>{ removeTyping(); runFlow('welcome'); state='get_name'; },900); },300);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+setTimeout(()=>{ showTyping(); setTimeout(()=>{ removeTyping(); runFlow('welcome'); state='get_name'; },1000); },500);
+</script>
+</body>
+</html>
